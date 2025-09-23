@@ -1,7 +1,8 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const Device = require("./models/Device");
+const Device = require('./src/models/Device'); // must match file path exactly
+
 
 const app = express();
 app.use(express.json());
