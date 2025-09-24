@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EC200U IoT API Test</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; }
+  label { display: block; margin: 10px 0 5px; }
+  input { padding: 8px; width: 250px; }
+  button { margin-top: 15px; padding: 10px 20px; cursor: pointer; }
+  pre { background: #f4f4f4; padding: 10px; margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<h2>Send Data to EC200U API</h2>
+<form id="deviceForm">
+  <label for="imei">IMEI:</label>
+  <input type="text" id="imei" name="imei" required>
+
+  <label for="temperature">Temperature:</label>
+  <input type="number" id="temperature" name="temperature" step="0.1" required>
+
+  <label for="status">Status:</label>
+  <input type="text" id="status" name="status" required>
+
+  <button type="submit">Send Data</button>
+</form>
+
+<h3>Response:</h3>
+<pre id="response"></pre>
+
+<script>
+document.getElementById('deviceForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const imei = document.getElementById('imei').value;
+  const temperature = parseFloat(document.getElementById('temperature').value);
+  const status = document.getElementById('status').value;
+
+  const payload = { imei, temperature, status };
+
+  try {
+    const res = await fetch('https://db-test-send.onrender.com/api/devices', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+  } catch (err) {
+    document.getElementById('response').textContent = 'Error: ' + err.message;
+  }
+});
+</script>
+
+</body>
+</html>
