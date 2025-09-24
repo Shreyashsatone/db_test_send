@@ -7,8 +7,9 @@ exports.createDeviceData = async (req, res) => {
     const { imei, temperature, status } = req.body;
     const newRecord = new Device({ imei, temperature, status });
     await newRecord.save();
-    res.json({ ok: true, message: "Data stored successfully" });
+    res.json({ ok: true, message: "Data stored successfully", record: newRecord });
   } catch (err) {
+    console.error("Create error:", err);
     res.status(500).json({ ok: false, error: err.message });
   }
 };
@@ -16,9 +17,10 @@ exports.createDeviceData = async (req, res) => {
 // GET /api/devices
 exports.getAllDeviceData = async (req, res) => {
   try {
-    const records = await Device.find().sort({ receivedAt: -1 }).limit(100).lean();
+    const records = await Device.find().sort({ timestamp: -1 }).limit(100).lean();
     res.json({ count: records.length, records });
   } catch (err) {
+    console.error("GetAll error:", err);
     res.status(500).json({ ok: false, error: err.message });
   }
 };
@@ -27,9 +29,10 @@ exports.getAllDeviceData = async (req, res) => {
 exports.getByImei = async (req, res) => {
   try {
     const imei = req.params.imei;
-    const records = await Device.find({ imei }).sort({ receivedAt: -1 }).limit(100).lean();
+    const records = await Device.find({ imei }).sort({ timestamp: -1 }).limit(100).lean();
     res.json({ imei, count: records.length, records });
   } catch (err) {
+    console.error("GetByImei error:", err);
     res.status(500).json({ ok: false, error: err.message });
   }
 };
